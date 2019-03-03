@@ -1,7 +1,7 @@
 {
-  "name": "opendig-maps",
+  "name": "arxquest-map",
   "version": "1.0.0",
-  "description": "OpenLayers map for the OpenDig project.",
+  "description": "OpenLayers map for the ArxQuest project.",
   "main": "index.js",
   "scripts": {
     "test": "echo \\\"Error: no test specified\\\" && exit 1",
@@ -10,18 +10,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/burgried/opendig-map.git"
+    "url": "git+https://github.com/burgried/arxquest-map.git"
   },
   "keywords": [
-    "OpenDig",
-    "OpenLayers"
+    "ArxQuest",
+    "OpenLayers",
+    "Archaeology"
   ],
   "author": "Bernhard Arnold",
   "license": "GPL-3.0-or-later",
   "bugs": {
-    "url": "https://github.com/burgried/opendig-map/issues"
+    "url": "https://github.com/burgried/arxquest-map/issues"
   },
-  "homepage": "https://github.com/burgried/opendig-map#readme",
+  "homepage": "https://github.com/burgried/arxquest-map#readme",
   "devDependencies": {
     "parcel-bundler": "^1.11.0"
   },

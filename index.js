@@ -9,21 +9,23 @@ import {ZoomSlider} from 'ol/control.js';
 import OSM from 'ol/source/OSM';
 
 (function() {
-  const target = document.getElementById('opendig-map');
+  const target = document.getElementById('arxquest-map');
 
   // Source URLs
   const urls = {
     finds: target.dataset.finds,
     contexts: target.dataset.contexts,
-    trenches: target.dataset.trenches
+    trenches: target.dataset.trenches,
+    surveys: target.dataset.surveys,
   };
 
   // Page controls
   const dom = {
-    checkboxes: {
-      finds: document.getElementById('opendig-map-toggle-finds'),
-      contexts: document.getElementById('opendig-map-toggle-contexts'),
-      trenches: document.getElementById('opendig-map-toggle-trenches')
+    toggle: {
+      finds: document.getElementById('arxquest-map-toggle-finds'),
+      contexts: document.getElementById('arxquest-map-toggle-contexts'),
+      trenches: document.getElementById('arxquest-map-toggle-trenches'),
+      trenches: document.getElementById('arxquest-map-toggle-surveys')
     }
   };
 
@@ -62,7 +64,6 @@ import OSM from 'ol/source/OSM';
   // Finds
   if (urls.finds) {
     const layer = new VectorLayer({
-      // Old instantiation moved to countriesSource
       source: new VectorSource({
         url: urls.finds,
         format: new GeoJSON()
@@ -73,7 +74,7 @@ import OSM from 'ol/source/OSM';
       },
       declutter: true
     });
-    dom.checkboxes.finds.addEventListener('click', function() {
+    dom.toggle.finds.addEventListener('click', function() {
       layer.setVisible(!layer.getVisible());
     });
     layers.push(layer);
@@ -82,7 +83,6 @@ import OSM from 'ol/source/OSM';
   // Contexts
   if (urls.contexts) {
     const layer = new VectorLayer({
-      // Old instantiation moved to countriesSource
       source: new VectorSource({
         url: urls.contexts,
         format: new GeoJSON()
@@ -93,7 +93,7 @@ import OSM from 'ol/source/OSM';
       },
       declutter: true
     });
-    dom.checkboxes.contexts.addEventListener('click', function() {
+    dom.toggle.contexts.addEventListener('click', function() {
       layer.setVisible(!layer.getVisible());
     });
     layers.push(layer);
@@ -102,7 +102,6 @@ import OSM from 'ol/source/OSM';
   // Trenches
   if (urls.trenches) {
     const layer = new VectorLayer({
-      // Old instantiation moved to countriesSource
       source: new VectorSource({
         url: urls.trenches,
         format: new GeoJSON()
@@ -115,7 +114,28 @@ import OSM from 'ol/source/OSM';
       }),
       declutter: true
     });
-    dom.checkboxes.trenches.addEventListener('click', function() {
+    dom.toggle.trenches.addEventListener('click', function() {
+      layer.setVisible(!layer.getVisible());
+    });
+    layers.push(layer);
+  }
+
+  // Surveys
+  if (urls.surveys) {
+    const layer = new VectorLayer({
+      source: new VectorSource({
+        url: urls.trenches,
+        format: new GeoJSON()
+      }),
+      style: new Style({
+        stroke: new Stroke({
+          color: "blue",
+          width: 2
+        })
+      }),
+      declutter: true
+    });
+    dom.toggle.surveys.addEventListener('click', function() {
       layer.setVisible(!layer.getVisible());
     });
     layers.push(layer);

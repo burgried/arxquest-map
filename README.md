@@ -1,20 +1,38 @@
-# opendig-map
+# ArxQest Map
 
-OpenLayers map for the OpenDig project!
+OpenLayers map for the ArxQuest project!
 
 ```bash
 npm install
 npm run build
 ```
 
+## Layers
+
 Use `data-*` attributes to assign specific layers to the map.
 
 ```html
-<div id="opendig-map" data-finds="https://example.com/finds.geojson"></div>
+<div id="arxquest-map" data-finds="https://example.com/finds.geojson"></div>
 ```
 
-Use `input` elements to toggle individual layers.
+Following layer attributes are supported.
+
+* `data-finds`
+* `data-contexts`
+* `data-trenches`
+* `data-surveys`
+
+## Controls
+
+Use `input` checkbox elements to toggle individual layers.
 
 ```html
-<input type="checkbox" id="opendig-map-finds-toggle" checked>
+<input type="checkbox" id="arxquest-map-toggle-finds" checked>
 ```
+
+Following layer control IDs are supported.
+
+* `arxquest-map-toggle-finds`
+* `arxquest-map-toggle-contexts`
+* `arxquest-map-toggle-trenches`
+* `arxquest-map-toggle-surveys`
