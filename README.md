@@ -1,4 +1,4 @@
-# ArxQest Map
+# ArxQuest Map
 
 OpenLayers map for the ArxQuest project!
 
