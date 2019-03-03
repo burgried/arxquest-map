@@ -1,0 +1,31 @@
+{
+  "name": "opendig-maps",
+  "version": "1.0.0",
+  "description": "OpenLayers map for the OpenDig project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \\\"Error: no test specified\\\" && exit 1",
+    "start": "parcel index.html",
+    "build": "parcel build --public-url . index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/burgried/opendig-map.git"
+  },
+  "keywords": [
+    "OpenDig",
+    "OpenLayers"
+  ],
+  "author": "Bernhard Arnold",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/burgried/opendig-map/issues"
+  },
+  "homepage": "https://github.com/burgried/opendig-map#readme",
+  "devDependencies": {
+    "parcel-bundler": "^1.11.0"
+  },
+  "dependencies": {
+    "ol": "^5.3.1"
+  }
+}
