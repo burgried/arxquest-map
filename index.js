@@ -11,10 +11,20 @@ import OSM from 'ol/source/OSM';
 (function() {
   const target = document.getElementById('arxquest-map');
 
+  // Skip if map already exists.
+  if (target.getAttribute("data-locked") == true) {
+    return;
+  }
+  target.setAttribute("data-locked", true);
+
+  console.log("Creating map...");
+
   // Source URLs
   const urls = {
     finds: target.dataset.finds,
     contexts: target.dataset.contexts,
+    objects: target.dataset.objects,
+    sections: target.dataset.sections,
     trenches: target.dataset.trenches,
     surveys: target.dataset.surveys,
   };
@@ -24,6 +34,8 @@ import OSM from 'ol/source/OSM';
     toggle: {
       finds: document.getElementById('arxquest-map-toggle-finds'),
       contexts: document.getElementById('arxquest-map-toggle-contexts'),
+      objects: document.getElementById('arxquest-map-toggle-objects'),
+      sections: document.getElementById('arxquest-map-toggle-sections'),
       trenches: document.getElementById('arxquest-map-toggle-trenches'),
       trenches: document.getElementById('arxquest-map-toggle-surveys')
     }
@@ -63,7 +75,8 @@ import OSM from 'ol/source/OSM';
 
   // Finds
   if (urls.finds) {
-    const layer = new VectorLayer({
+    console.log(urls.finds);
+    var layer = new VectorLayer({
       source: new VectorSource({
         url: urls.finds,
         format: new GeoJSON()
@@ -74,15 +87,17 @@ import OSM from 'ol/source/OSM';
       },
       declutter: true
     });
-    dom.toggle.finds.addEventListener('click', function() {
-      layer.setVisible(!layer.getVisible());
-    });
+    if (dom.toggle.finds) {
+      dom.toggle.finds.addEventListener('click', function() {
+        layer.setVisible(!layer.getVisible());
+      });
+    }
     layers.push(layer);
   }
 
   // Contexts
   if (urls.contexts) {
-    const layer = new VectorLayer({
+    var layer = new VectorLayer({
       source: new VectorSource({
         url: urls.contexts,
         format: new GeoJSON()
@@ -93,15 +108,59 @@ import OSM from 'ol/source/OSM';
       },
       declutter: true
     });
-    dom.toggle.contexts.addEventListener('click', function() {
-      layer.setVisible(!layer.getVisible());
+    if (dom.toggle.contexts) {
+      dom.toggle.contexts.addEventListener('click', function() {
+        layer.setVisible(!layer.getVisible());
+      });
+    }
+    layers.push(layer);
+  }
+
+  // Objects
+  if (urls.objects) {
+    var layer = new VectorLayer({
+      source: new VectorSource({
+        url: urls.contexts,
+        format: new GeoJSON()
+      }),
+      style: function(feature) {
+        labelStyle.getText().setText(feature.get('name'));
+        return style;
+      },
+      declutter: true
     });
+    if (dom.toggle.objects) {
+      dom.toggle.objects.addEventListener('click', function() {
+        layer.setVisible(!layer.getVisible());
+      });
+    }
+    layers.push(layer);
+  }
+
+  // Sections
+  if (urls.sections) {
+    var layer = new VectorLayer({
+      source: new VectorSource({
+        url: urls.sections,
+        format: new GeoJSON()
+      }),
+      style: function(feature) {
+        labelStyle.getText().setText(feature.get('name'));
+        return style;
+      },
+      declutter: true
+    });
+    if (dom.toggle.sections) {
+      dom.toggle.sections.addEventListener('click', function() {
+        layer.setVisible(!layer.getVisible());
+      });
+    }
     layers.push(layer);
   }
 
   // Trenches
   if (urls.trenches) {
-    const layer = new VectorLayer({
+    var layer = new VectorLayer({
       source: new VectorSource({
         url: urls.trenches,
         format: new GeoJSON()
@@ -114,17 +173,20 @@ import OSM from 'ol/source/OSM';
       }),
       declutter: true
     });
-    dom.toggle.trenches.addEventListener('click', function() {
-      layer.setVisible(!layer.getVisible());
-    });
+    if (dom.toggle.trenches) {
+      dom.toggle.trenches.addEventListener('click', function() {
+        layer.setVisible(!layer.getVisible());
+      });
+    }
     layers.push(layer);
   }
 
   // Surveys
   if (urls.surveys) {
-    const layer = new VectorLayer({
+    console.log(urls.surveys);
+    var layer = new VectorLayer({
       source: new VectorSource({
-        url: urls.trenches,
+        url: urls.surveys,
         format: new GeoJSON()
       }),
       style: new Style({
@@ -133,22 +195,27 @@ import OSM from 'ol/source/OSM';
           width: 2
         })
       }),
-      declutter: true
+      declutter: false
     });
-    dom.toggle.surveys.addEventListener('click', function() {
-      layer.setVisible(!layer.getVisible());
-    });
+    if (dom.toggle.surveys) {
+      dom.toggle.surveys.addEventListener('click', function() {
+        layer.setVisible(!layer.getVisible());
+      });
+    }
     layers.push(layer);
   }
+
+  // View
+  var view = new View({
+    center: [0, 0],
+    zoom: 3
+  });
 
   // Map
   var map = new Map({
     target: target,
     layers: layers,
-    view: new View({
-      center: [0, 0],
-      zoom: 3
-    })
+    view: view
   });
 
   // Add zoom slider control

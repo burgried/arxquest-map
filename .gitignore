@@ -1,5 +1,6 @@
 # Cache
 .cache/
+dist/
 
 # Logs
 logs
