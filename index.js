@@ -37,7 +37,7 @@ import OSM from 'ol/source/OSM';
       objects: document.getElementById('arxquest-map-toggle-objects'),
       sections: document.getElementById('arxquest-map-toggle-sections'),
       trenches: document.getElementById('arxquest-map-toggle-trenches'),
-      trenches: document.getElementById('arxquest-map-toggle-surveys')
+      surveys: document.getElementById('arxquest-map-toggle-surveys')
     }
   };
 
@@ -184,7 +184,7 @@ import OSM from 'ol/source/OSM';
   // Surveys
   if (urls.surveys) {
     console.log(urls.surveys);
-    var layer = new VectorLayer({
+    var surveys = new VectorLayer({
       source: new VectorSource({
         url: urls.surveys,
         format: new GeoJSON()
@@ -199,10 +199,10 @@ import OSM from 'ol/source/OSM';
     });
     if (dom.toggle.surveys) {
       dom.toggle.surveys.addEventListener('click', function() {
-        layer.setVisible(!layer.getVisible());
+        surveys.setVisible(!surveys.getVisible());
       });
     }
-    layers.push(layer);
+    layers.push(surveys);
   }
 
   // View
