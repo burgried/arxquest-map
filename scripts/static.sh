@@ -4,5 +4,5 @@
 mkdir -p dist
 cd dist
 rm -rf test
-ln -s ../test test
+cp -r ../test test
 cd ..
