@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
 	<meta charset="utf-8">
 	<title>ArxQuest Map</title>
@@ -8,11 +8,23 @@
 		#arxquest-map {
 			width: 100%;
 		}
+		/* Coordinates at mouse position. */
+		.ol-mouse-position div {
+			background: rgba(0, 60, 136, 0.3);
+			border-radius: 5px;
+			padding: 5px 4px 3px 4px;
+			color: white;
+			font-family: 'sans-serif';
+			font-size: 11px;
+			display: inline-block;
+			border: 3px solid rgba(255, 255, 255, 0.9);
+		}
 	</style>
 </head>
 <body>
 	<h1>ArxQuest Map</h1>
 	<div id="arxquest-map"
+		lang="de"
 		data-finds="/test/finds.geojson"
 		data-contexts="/test/contexts.geojson"
 		data-objects="/test/objects.geojson"
@@ -26,6 +38,10 @@
 	<div><input type="checkbox" id="arxquest-map-toggle-sections" checked>Sections</div>
 	<div><input type="checkbox" id="arxquest-map-toggle-trenches" checked>Trenches</div>
 	<div><input type="checkbox" id="arxquest-map-toggle-surveys" checked>Surveys</div>
+	<div><input type="radio" value="grau" name="basemap"> Basemap Grau</div>
+	<div><input type="radio" value="ortho" name="basemap"> Basemap Ortho</div>
+	<div><input type="radio" value="oberflaeche" name="basemap"> Basemap Oberfläche</div>
+	<div><input type="radio" value="gelaende"  name="basemap" checked> Basemap Gelände</div>
 	<script src="./index.js"></script>
 </body>
 </html>

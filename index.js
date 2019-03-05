@@ -1,224 +1,121 @@
 import 'ol/ol.css';
 import {Map, View} from 'ol';
-import TileLayer from 'ol/layer/Tile';
+import GroupLayer from 'ol/layer/Group';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
-import {Fill, Stroke, Style, Text} from 'ol/style.js';
-import {ZoomSlider} from 'ol/control.js';
-import OSM from 'ol/source/OSM';
+import {Fill, Stroke, Style, Text, Circle} from 'ol/style';
+import {defaults as defaultControls} from 'ol/control';
+import {ZoomSlider, ScaleLine, MousePosition, Attribution} from 'ol/control';
+import {fromLonLat} from 'ol/proj';
+import {format as coordinateFormat} from 'ol/coordinate';
+
+import {createBasemapGrau} from './basemap.js';
+import {createBasemapOrtho} from './basemap.js';
+import {createBasemapOberflaeche} from './basemap.js';
+import {createBasemapGelaende} from './basemap.js';
+
+import {pointStyle, polygonStyle, surveysStyle} from './style.js';
 
 (function() {
   const target = document.getElementById('arxquest-map');
 
   // Skip if map already exists.
-  if (target.getAttribute("data-locked") == true) {
+  if (target.getElementsByClassName('ol-viewport').length) {
     return;
   }
-  target.setAttribute("data-locked", true);
 
   console.log("Creating map...");
+  const lang = target.getAttribute('lang');
+  console.log("Map language: " + lang);
 
-  // Source URLs
-  const urls = {
-    finds: target.dataset.finds,
-    contexts: target.dataset.contexts,
-    objects: target.dataset.objects,
-    sections: target.dataset.sections,
-    trenches: target.dataset.trenches,
-    surveys: target.dataset.surveys,
-  };
+  function LayerInput(name, style) {
+    this.url = target.getAttribute('data-' + name);
+    this.control = document.getElementById('arxquest-map-toggle-' + name);
+    this.style = style;
+  }
 
-  // Page controls
-  const dom = {
-    toggle: {
-      finds: document.getElementById('arxquest-map-toggle-finds'),
-      contexts: document.getElementById('arxquest-map-toggle-contexts'),
-      objects: document.getElementById('arxquest-map-toggle-objects'),
-      sections: document.getElementById('arxquest-map-toggle-sections'),
-      trenches: document.getElementById('arxquest-map-toggle-trenches'),
-      surveys: document.getElementById('arxquest-map-toggle-surveys')
-    }
-  };
+  var inputs = [
+    new LayerInput('surveys', surveysStyle),
+    new LayerInput('trenches', polygonStyle),
+    new LayerInput('sections', polygonStyle),
+    new LayerInput('objects', polygonStyle),
+    new LayerInput('contexts', polygonStyle),
+    new LayerInput('finds', pointStyle),
+  ];
 
-  // Styles
-  var labelStyle = new Style({
-    text: new Text({
-      font: '12px Calibri,sans-serif',
-      overflow: true,
-      fill: new Fill({
-        color: '#000'
-      }),
-      stroke: new Stroke({
-        color: '#fff',
-        width: 3
-      })
-    })
-  });
-  var polygonStyle = new Style({
-    fill: new Fill({
-      color: 'rgba(255, 255, 255, 0.6)'
-    }),
-    stroke: new Stroke({
-      color: '#319FD3',
-      width: 1
-    })
-  });
-  var style = [polygonStyle, labelStyle];
-
-  // Create Layers
   var layers = [
-    new TileLayer({
-      source: new OSM()
+    new GroupLayer({
+      title: 'Basemaps',
+      layers: [
+        createBasemapGrau(false),
+        createBasemapOrtho(false),
+        createBasemapOberflaeche(false),
+        createBasemapGelaende(true),
+      ]
     })
   ];
 
-  // Finds
-  if (urls.finds) {
-    console.log(urls.finds);
-    var layer = new VectorLayer({
-      source: new VectorSource({
-        url: urls.finds,
-        format: new GeoJSON()
-      }),
-      style: function(feature) {
-        labelStyle.getText().setText(feature.get('name'));
-        return style;
-      },
-      declutter: true
-    });
-    if (dom.toggle.finds) {
-      dom.toggle.finds.addEventListener('click', function() {
-        layer.setVisible(!layer.getVisible());
+  var radios = document.getElementsByName('basemap');
+  radios.forEach(function(control) {
+    control.addEventListener('change', function() {
+      layers[0].getLayers().forEach(function(layer) {
+        layer.setVisible(false);
+        console.log(layer.name, control.value, control.checked);
+        if (layer.name == control.value && control.checked) {
+          layer.setVisible(true);
+        }
       });
-    }
-    layers.push(layer);
-  }
+    });
+  });
 
-  // Contexts
-  if (urls.contexts) {
-    var layer = new VectorLayer({
-      source: new VectorSource({
-        url: urls.contexts,
-        format: new GeoJSON()
-      }),
-      style: function(feature) {
-        labelStyle.getText().setText(feature.get('name'));
-        return style;
-      },
-      declutter: true
-    });
-    if (dom.toggle.contexts) {
-      dom.toggle.contexts.addEventListener('click', function() {
-        layer.setVisible(!layer.getVisible());
+  inputs.forEach(function(input) {
+    if (input.url) {
+      console.log('adding layer ' + input.url);
+      var layer = new VectorLayer({
+        source: new VectorSource({
+          url: input.url,
+          format: new GeoJSON(),
+          attributions: ['OpenData: <a href="http://burgried.at/">burgried.at</a>']
+        }),
+        style: input.style,
+        declutter: false
       });
+      if (input.control) {
+        input.control.addEventListener('click', function() {
+          layer.setVisible(!layer.getVisible());
+        });
+      }
+      layers.push(layer);
     }
-    layers.push(layer);
-  }
-
-  // Objects
-  if (urls.objects) {
-    var layer = new VectorLayer({
-      source: new VectorSource({
-        url: urls.contexts,
-        format: new GeoJSON()
-      }),
-      style: function(feature) {
-        labelStyle.getText().setText(feature.get('name'));
-        return style;
-      },
-      declutter: true
-    });
-    if (dom.toggle.objects) {
-      dom.toggle.objects.addEventListener('click', function() {
-        layer.setVisible(!layer.getVisible());
-      });
-    }
-    layers.push(layer);
-  }
-
-  // Sections
-  if (urls.sections) {
-    var layer = new VectorLayer({
-      source: new VectorSource({
-        url: urls.sections,
-        format: new GeoJSON()
-      }),
-      style: function(feature) {
-        labelStyle.getText().setText(feature.get('name'));
-        return style;
-      },
-      declutter: true
-    });
-    if (dom.toggle.sections) {
-      dom.toggle.sections.addEventListener('click', function() {
-        layer.setVisible(!layer.getVisible());
-      });
-    }
-    layers.push(layer);
-  }
-
-  // Trenches
-  if (urls.trenches) {
-    var layer = new VectorLayer({
-      source: new VectorSource({
-        url: urls.trenches,
-        format: new GeoJSON()
-      }),
-      style: new Style({
-        stroke: new Stroke({
-          color: "blue",
-          width: 2
-        })
-      }),
-      declutter: true
-    });
-    if (dom.toggle.trenches) {
-      dom.toggle.trenches.addEventListener('click', function() {
-        layer.setVisible(!layer.getVisible());
-      });
-    }
-    layers.push(layer);
-  }
-
-  // Surveys
-  if (urls.surveys) {
-    console.log(urls.surveys);
-    var surveys = new VectorLayer({
-      source: new VectorSource({
-        url: urls.surveys,
-        format: new GeoJSON()
-      }),
-      style: new Style({
-        stroke: new Stroke({
-          color: "blue",
-          width: 2
-        })
-      }),
-      declutter: false
-    });
-    if (dom.toggle.surveys) {
-      dom.toggle.surveys.addEventListener('click', function() {
-        surveys.setVisible(!surveys.getVisible());
-      });
-    }
-    layers.push(surveys);
-  }
+  });
 
   // View
   var view = new View({
-    center: [0, 0],
-    zoom: 3
+    center: fromLonLat([16.073, 48.24735]),
+    zoom: 18
+  });
+
+  var attribution = new Attribution({
+    collapsible: true
   });
 
   // Map
   var map = new Map({
     target: target,
+    controls: defaultControls({attribution: false}).extend([
+      attribution,
+      new ZoomSlider(),
+      new ScaleLine(),
+      new MousePosition({
+        projection: 'EPSG:4326',
+        coordinateFormat: function(coordinate) {
+          return coordinateFormat(coordinate, '<div>{x}, {y}</div>', 6);
+        }
+      })
+    ]),
     layers: layers,
-    view: view
+    view: view,
   });
 
-  // Add zoom slider control
-  var zoomslider = new ZoomSlider();
-  map.addControl(zoomslider);
 })();
