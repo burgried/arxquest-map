@@ -19,20 +19,41 @@ Following layer attributes are supported.
 
 * `data-finds`
 * `data-contexts`
+* `data-objects`
+* `data-sections`
 * `data-trenches`
 * `data-surveys`
 
 ## Controls
 
+### Toggle layers
+
 Use `input` checkbox elements to toggle individual layers.
 
 ```html
-<input type="checkbox" id="arxquest-map-toggle-finds" checked>
+<input type="checkbox" id="arxquest-toggle-finds" checked>
 ```
 
 Following layer control IDs are supported.
 
-* `arxquest-map-toggle-finds`
-* `arxquest-map-toggle-contexts`
-* `arxquest-map-toggle-trenches`
-* `arxquest-map-toggle-surveys`
+* `arxquest-toggle-finds`
+* `arxquest-toggle-contexts`
+* `arxquest-toggle-objects`
+* `arxquest-toggle-sections`
+* `arxquest-toggle-trenches`
+* `arxquest-toggle-surveys`
+
+### Switch basemap
+
+Use `input` radio elements to switch basemap layer.
+
+```html
+<input type="radio" value="grau" name="arxquest-basemap" checked>
+```
+
+Following basemap values are supported.
+
+* `grau`
+* `ortho`
+* `oberflaeche`
+* `gelaende`

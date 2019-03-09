@@ -3,7 +3,6 @@ import {XYZ as XYZSource} from 'ol/source';
 
 var exports = module.exports = {};
 
-var maxZoom = 17 // NOTE: important to load tiles even on higher zooms!
 var attributions = ['Datenquelle: <a href="https://www.basemap.at/">basemap.at</a>'];
 
 exports.createBasemapGrau = function(visible) {
@@ -13,7 +12,7 @@ exports.createBasemapGrau = function(visible) {
     source: new XYZSource({
       url: 'https://maps{1-4}.wien.gv.at/basemap/bmapgrau/normal/google3857/{z}/{y}/{x}.png',
       crossOrigin: 'anonymous',
-      maxZoom: maxZoom,
+      maxZoom: 19,
       attributions: attributions
     })
   });
@@ -28,7 +27,7 @@ exports.createBasemapOrtho = function(visible) {
     source: new XYZSource({
       url: 'https://maps{1-4}.wien.gv.at/basemap/bmaporthofoto30cm/normal/google3857/{z}/{y}/{x}.jpeg',
       crossOrigin: 'anonymous',
-      maxZoom: maxZoom,
+      maxZoom: 18,
       attributions: attributions
     })
   });
@@ -43,7 +42,7 @@ exports.createBasemapOberflaeche = function(visible) {
     source: new XYZSource({
       url: 'https://maps{1-4}.wien.gv.at/basemap/bmapoberflaeche/grau/google3857/{z}/{y}/{x}.jpeg',
       crossOrigin: 'anonymous',
-      maxZoom: maxZoom,
+      maxZoom: 17,
       attributions: attributions
     })
   });
@@ -58,7 +57,7 @@ exports.createBasemapGelaende = function(visible) {
     source: new XYZSource({
       url: 'https://maps{1-4}.wien.gv.at/basemap/bmapgelaende/grau/google3857/{z}/{y}/{x}.jpeg',
       crossOrigin: 'anonymous',
-      maxZoom: maxZoom,
+      maxZoom: 17,
       attributions: attributions
     })
   });

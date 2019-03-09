@@ -4,18 +4,22 @@ import GroupLayer from 'ol/layer/Group';
 import VectorLayer from 'ol/layer/Vector';
 import VectorSource from 'ol/source/Vector';
 import GeoJSON from 'ol/format/GeoJSON';
-import {Fill, Stroke, Style, Text, Circle} from 'ol/style';
+import Overlay from 'ol/Overlay';
 import {defaults as defaultControls} from 'ol/control';
 import {ZoomSlider, ScaleLine, MousePosition, Attribution} from 'ol/control';
-import {fromLonLat} from 'ol/proj';
+import {defaults as defaultInteractions} from 'ol/interaction';
+import {fromLonLat, toLonLat} from 'ol/proj';
+import {toStringHDMS} from 'ol/coordinate';
 import {format as coordinateFormat} from 'ol/coordinate';
 
+// Basemap layer functions
 import {createBasemapGrau} from './basemap.js';
 import {createBasemapOrtho} from './basemap.js';
 import {createBasemapOberflaeche} from './basemap.js';
 import {createBasemapGelaende} from './basemap.js';
 
-import {pointStyle, polygonStyle, surveysStyle} from './style.js';
+// Layer styles
+import {findStyle, polygonStyle, contextStyle, trenchStyle, surveyStyle} from './style.js';
 
 (function() {
   const target = document.getElementById('arxquest-map');
@@ -31,17 +35,17 @@ import {pointStyle, polygonStyle, surveysStyle} from './style.js';
 
   function LayerInput(name, style) {
     this.url = target.getAttribute('data-' + name);
-    this.control = document.getElementById('arxquest-map-toggle-' + name);
+    this.control = document.getElementById('arxquest-toggle-' + name);
     this.style = style;
   }
 
   var inputs = [
-    new LayerInput('surveys', surveysStyle),
+    new LayerInput('surveys', surveyStyle),
     new LayerInput('trenches', polygonStyle),
     new LayerInput('sections', polygonStyle),
     new LayerInput('objects', polygonStyle),
-    new LayerInput('contexts', polygonStyle),
-    new LayerInput('finds', pointStyle),
+    new LayerInput('contexts', contextStyle),
+    new LayerInput('finds', findStyle),
   ];
 
   var layers = [
@@ -56,12 +60,12 @@ import {pointStyle, polygonStyle, surveysStyle} from './style.js';
     })
   ];
 
-  var radios = document.getElementsByName('basemap');
+  // Create basemap layer switcher
+  var radios = document.getElementsByName('arxquest-basemap');
   radios.forEach(function(control) {
     control.addEventListener('change', function() {
       layers[0].getLayers().forEach(function(layer) {
         layer.setVisible(false);
-        console.log(layer.name, control.value, control.checked);
         if (layer.name == control.value && control.checked) {
           layer.setVisible(true);
         }
@@ -69,6 +73,24 @@ import {pointStyle, polygonStyle, surveysStyle} from './style.js';
     });
   });
 
+  /**
+   * Elements that make up the popup.
+   */
+  var container = document.getElementById('arxquest-popup');
+  var content = document.getElementById('popup-content');
+
+  /**
+   * Create an overlay to anchor the popup to the map.
+   */
+  var overlay = new Overlay({
+    element: container,
+    autoPan: true,
+    autoPanAnimation: {
+      duration: 250
+    }
+  });
+
+  // Create layers
   inputs.forEach(function(input) {
     if (input.url) {
       console.log('adding layer ' + input.url);
@@ -90,32 +112,52 @@ import {pointStyle, polygonStyle, surveysStyle} from './style.js';
     }
   });
 
-  // View
+  // Create view
   var view = new View({
     center: fromLonLat([16.073, 48.24735]),
-    zoom: 18
+    zoom: 18,
+    minZoom: 12,
+    maxZoom: 25
   });
 
-  var attribution = new Attribution({
-    collapsible: true
-  });
-
-  // Map
+  // Create map
   var map = new Map({
     target: target,
-    controls: defaultControls({attribution: false}).extend([
-      attribution,
-      new ZoomSlider(),
-      new ScaleLine(),
-      new MousePosition({
-        projection: 'EPSG:4326',
-        coordinateFormat: function(coordinate) {
-          return coordinateFormat(coordinate, '<div>{x}, {y}</div>', 6);
-        }
-      })
-    ]),
+    controls: defaultControls({attribution: false}),
+    interactions: defaultInteractions({mouseWheelZoom: false}),
     layers: layers,
     view: view,
+    overlays: [overlay],
+  });
+
+  // Add additional controls
+  map.addControl(new ZoomSlider());
+  map.addControl(new ScaleLine());
+
+  // Add mouse position indicator
+  map.addControl(new MousePosition({
+    projection: 'EPSG:4326',
+    coordinateFormat: function(coordinate) {
+      return coordinateFormat(coordinate, '<div>{x}, {y}</div>', 6);
+    }
+  }));
+
+  // Add collapsible attributions
+  map.addControl(new Attribution({
+    collapsible: true
+  }));
+
+  // Add popup overlay handler
+  map.on('singleclick', function(evt) {
+    overlay.setPosition();
+    var features = map.getFeaturesAtPixel(evt.pixel);
+    if (features) {
+      var feature = features[0];
+      var coordinate = evt.coordinate;
+      var hdms = toStringHDMS(toLonLat(coordinate));
+      content.innerHTML = '<p><a href="' + feature.get('url') + '">' + feature.get('title') + '</a></p>';
+      overlay.setPosition(coordinate);
+    }
   });
 
 })();

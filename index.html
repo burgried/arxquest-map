@@ -1,47 +1,79 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
 	<meta charset="utf-8">
 	<title>ArxQuest Map</title>
-	<link rel="stylesheet" href="https://openlayers.org/en/v5.3.0/css/ol.css" type="text/css">
-	<style>
-		#arxquest-map {
-			width: 100%;
-		}
-		/* Coordinates at mouse position. */
-		.ol-mouse-position div {
-			background: rgba(0, 60, 136, 0.3);
-			border-radius: 5px;
-			padding: 5px 4px 3px 4px;
-			color: white;
-			font-family: 'sans-serif';
-			font-size: 11px;
-			display: inline-block;
-			border: 3px solid rgba(255, 255, 255, 0.9);
-		}
-	</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700">
+	<link rel="stylesheet" href="https://openlayers.org/en/v5.3.0/css/ol.css">
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<h1>ArxQuest Map</h1>
-	<div id="arxquest-map"
-		lang="de"
-		data-finds="/test/finds.geojson"
-		data-contexts="/test/contexts.geojson"
-		data-objects="/test/objects.geojson"
-		data-sections="/test/sections.geojson"
-		data-trenches="/test/trenches.geojson"
-		data-surveys="/test/surveys.geojson"></div>
+	<div class="w3-container">
+		<div class="w3-content">
+			<header>
+				<h1>ArxQuest Map</h1>
+			</header>
+			<div id="arxquest-map" class="w3-round" lang="en"
+				data-finds="/test/finds.geojson"
+				data-contexts="/test/contexts.geojson"
+				data-objects="/test/objects.geojson"
+				data-sections="/test/sections.geojson"
+				data-trenches="/test/trenches.geojson"
+				data-surveys="/test/surveys.geojson">
+			</div>
+			<div id="arxquest-popup" class="ol-popup">
+				<div id="popup-content"></div>
+			</div>
+		</div>
+		<div class="w3-content">
+			<div class="w3-half">
+				<div>
+					<input type="checkbox" id="arxquest-toggle-finds" class="w3-check" checked>
+					<label for="arxquest-toggle-finds">Finds</label>
+				</div>
+				<div>
+					<input type="checkbox" id="arxquest-toggle-contexts" class="w3-check" checked>
+					<label for="arxquest-toggle-contexts">Contexts</label>
+				</div>
+				<div>
+					<input type="checkbox" id="arxquest-toggle-objects" class="w3-check" checked>
+					<label for="arxquest-toggle-objects">Objects</label>
+				</div>
+				<div>
+					<input type="checkbox" id="arxquest-toggle-sections" class="w3-check" checked>
+					<label for="arxquest-toggle-sections">Sections</label>
+				</div>
+				<div>
+					<input type="checkbox" id="arxquest-toggle-trenches" class="w3-check" checked>
+					<label for="arxquest-toggle-trenches">Trenches</label>
+				</div>
+				<div>
+					<input type="checkbox" id="arxquest-toggle-surveys" class="w3-check" checked>
+					<label for="arxquest-toggle-surveys">Surveys</label>
+				</div>
+			</div>
+			<div class="w3-half">
+				<div>
+					<input type="radio" id="arxquest-basemap-grau" class="w3-radio" value="grau" name="arxquest-basemap">
+					<label for="arxquest-basemap-grau">Basemap Grau</label>
+				</div>
+				<div>
+					<input type="radio" id="arxquest-basemap-ortho" class="w3-radio" value="ortho" name="arxquest-basemap">
+					<label for="arxquest-basemap-ortho">Basemap Ortho</label>
+				</div>
+				<div>
+					<input type="radio" id="arxquest-basemap-oberflaeche" class="w3-radio" value="oberflaeche" name="arxquest-basemap">
+					<label for="arxquest-basemap-oberflaeche">Basemap Oberfläche</label>
+				</div>
+				<div>
+					<input type="radio" id="arxquest-basemap-gelaende" class="w3-radio" value="gelaende"  name="arxquest-basemap" checked>
+					<label for="arxquest-basemap-gelaende">Basemap Gelände</label>
+				</div>
+			</div>
+		</div>
 	</div>
-	<div><input type="checkbox" id="arxquest-map-toggle-finds" checked>Finds</div>
-	<div><input type="checkbox" id="arxquest-map-toggle-contexts" checked>Contexts</div>
-	<div><input type="checkbox" id="arxquest-map-toggle-objects" checked>Objects</div>
-	<div><input type="checkbox" id="arxquest-map-toggle-sections" checked>Sections</div>
-	<div><input type="checkbox" id="arxquest-map-toggle-trenches" checked>Trenches</div>
-	<div><input type="checkbox" id="arxquest-map-toggle-surveys" checked>Surveys</div>
-	<div><input type="radio" value="grau" name="basemap"> Basemap Grau</div>
-	<div><input type="radio" value="ortho" name="basemap"> Basemap Ortho</div>
-	<div><input type="radio" value="oberflaeche" name="basemap"> Basemap Oberfläche</div>
-	<div><input type="radio" value="gelaende"  name="basemap" checked> Basemap Gelände</div>
 	<script src="./index.js"></script>
 </body>
 </html>
