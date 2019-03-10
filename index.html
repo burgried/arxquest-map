@@ -23,8 +23,13 @@
 				data-trenches="/test/trenches.geojson"
 				data-surveys="/test/surveys.geojson">
 			</div>
-			<div id="arxquest-popup" class="ol-popup">
-				<div id="popup-content"></div>
+			<div id="arxquest-popup" class="ol-popup w3-light-grey w3-padding w3-round" style="display:none;">
+				<a id="ol-popup-link" href="" title="">
+					<img id="ol-popup-img" class="w3-round" style="width:100%" src="./default.png" alt="" data-fallback="http://192.168.64.2/arxquest-2019-03-04/site/templates//assets/img/default.png">
+				</a>
+				<div style="overflow:hidden; height:64px;">
+					<span id="ol-popup-tag" class="w3-tag w3-round w3-orange w3-text-white" style="margin-top: 6px;"></span>
+				</div>
 			</div>
 		</div>
 		<div class="w3-content">

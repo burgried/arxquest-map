@@ -77,7 +77,9 @@ import {findStyle, polygonStyle, contextStyle, trenchStyle, surveyStyle} from '.
    * Elements that make up the popup.
    */
   var container = document.getElementById('arxquest-popup');
-  var content = document.getElementById('popup-content');
+  var popupLink = document.getElementById('ol-popup-link');
+  var popupImg = document.getElementById('ol-popup-img');
+  var popupTag = document.getElementById('ol-popup-tag');
 
   /**
    * Create an overlay to anchor the popup to the map.
@@ -150,12 +152,20 @@ import {findStyle, polygonStyle, contextStyle, trenchStyle, surveyStyle} from '.
   // Add popup overlay handler
   map.on('singleclick', function(evt) {
     overlay.setPosition();
+    container.setAttribute('style', 'display:none');
     var features = map.getFeaturesAtPixel(evt.pixel);
     if (features) {
       var feature = features[0];
       var coordinate = evt.coordinate;
-      var hdms = toStringHDMS(toLonLat(coordinate));
-      content.innerHTML = '<p><a href="' + feature.get('url') + '">' + feature.get('title') + '</a></p>';
+      container.setAttribute('style', 'display:inherit');
+      popupLink.setAttribute('href', feature.get('url'));
+      popupLink.setAttribute('title', feature.get('title'));
+      if (feature.get('thumbnail')) {
+        popupImg.setAttribute('src', feature.get('thumbnail'));
+      } else {
+        popupImg.setAttribute('src', popupImg.getAttribute('data-fallback'));
+      }
+      popupTag.innerHTML = feature.get('title');
       overlay.setPosition(coordinate);
     }
   });
