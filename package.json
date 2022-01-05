@@ -1,12 +1,11 @@
 {
   "name": "arxquest-map",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "OpenLayers map for the ArxQuest project.",
-  "main": "index.js",
   "scripts": {
     "test": "echo \\\"Error: no test specified\\\" && exit 1",
-    "start": "./scripts/static.sh; parcel index.html",
-    "build": "parcel build --public-url . index.html"
+    "start": "./scripts/static.sh; parcel src/index.html",
+    "build": "parcel build --public-url . src/index.html"
   },
   "repository": {
     "type": "git",
@@ -24,9 +23,9 @@
   },
   "homepage": "https://github.com/burgried/arxquest-map#readme",
   "devDependencies": {
-    "parcel-bundler": "^1.11.0"
+    "parcel": "^2.0.1"
   },
   "dependencies": {
-    "ol": "^5.3.1"
+    "ol": "^5.3.3"
   }
 }
